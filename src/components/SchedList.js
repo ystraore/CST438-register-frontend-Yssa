@@ -68,7 +68,7 @@ class SchedList extends Component {
     if (window.confirm('Are you sure you want to drop the course?')) {
       const token = Cookies.get('XSRF-TOKEN');
       
-      fetch(`${SERVER_URL} schedule/${id}`,
+      fetch(`${SERVER_URL}schedule/${id}`,
         {
           method: 'DELETE',
           headers: { 'X-XSRF-TOKEN': token }

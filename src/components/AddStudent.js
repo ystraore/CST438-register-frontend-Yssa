@@ -16,7 +16,7 @@ import {SERVER_URL} from '../constants.js'
 class AddStudent extends Component {
       constructor(props) {
       super(props);
-      this.state = {open: false, student:{} };
+      this.state = {open: false, name:'', email:'' };
     };
     
     handleClickOpen = () => {
@@ -28,59 +28,24 @@ class AddStudent extends Component {
     };
 
     handleChange = (event) => {
-      this.setState({student:{name: event.target.value}});
+      this.setState({[event.target.name]: event.target.value});
     }
 
   // Save new student and close modal form
     handleAdd = () => {
-       this.props.addStudent(this.state.student);
+       this.addNewStudent({name: this.state.name, email:this.state.email});
        this.handleClose();
     }
-
-// Add new student fetch method
-    // fetchstudent = () => {
-    //     console.log("AddStudent.fetchstudent");
-    //     const token = Cookies.get('XSRF-TOKEN');
-        
-    //     fetch(`${SERVER_URL}/name=${this.props.location.year}&email=${this.props.location.semester}`, 
-    //       {  
-    //         method: 'POST', 
-    //         headers: { 'X-XSRF-TOKEN': token }
-    //       } )
-    //     .then((response) => {
-    //       console.log("FETCH RESP:"+response);
-    //       return response.json();}) 
-    //     .then((responseData) => { 
-
-    //       // do a sanity check on response
-    //       if (Array.isArray(responseData.student)) {
-    //         this.setState({ 
-    //           student: responseData.student,
-    //         });
-    //       } else {
-    //         toast.error("Fetch failed.", {
-    //           position: toast.POSITION.BOTTOM_LEFT
-    //         });
-    //       }        
-    //     })
-    //     .catch(err => {
-    //       toast.error("Fetch failed.", {
-    //           position: toast.POSITION.BOTTOM_LEFT
-    //         });
-    //         console.error(err); 
-    //     })
-    //   }
 
 
   // Add new student (this is the created method)
   addNewStudent = (student) => {
     const token = Cookies.get('XSRF-TOKEN');
- 
-    fetch(`${SERVER_URL}/studentRoute`,
+    fetch(`${SERVER_URL}/student`, 
       { 
         method: 'POST', 
-        headers: { 'Content-Type': 'application/json',
-                   'X-XSRF-TOKEN': token  }, 
+        headers: {'Content-Type': 'application/json',
+                   'X-XSRF-TOKEN': token }, 
         body: JSON.stringify(student)
       })
     .then(res => {
@@ -88,7 +53,7 @@ class AddStudent extends Component {
           toast.success("New student successfully added", {
               position: toast.POSITION.BOTTOM_LEFT
           });
-          this.fetchstudent();
+          // this.fetchstudent();
         } else {
           toast.error("Error when adding", {
               position: toast.POSITION.BOTTOM_LEFT
@@ -112,17 +77,18 @@ class AddStudent extends Component {
             <Dialog open={this.state.open} onClose={this.handleClose}>
                 <DialogTitle>Add Student</DialogTitle>
                 <DialogContent  style={{paddingTop: 20}} >
-                  <TextField autoFocus fullWidth label="Name" Name="name" onChange={this.handleChange}  /> 
+                  <TextField autoFocus fullWidth label="Name" name="name" onChange={this.handleChange}  /> 
                 </DialogContent>
                 <DialogContent  style={{paddingTop: 20}} >
-                  <TextField autoFocus fullWidth label="Email" Email="email" onChange={this.handleChange}  /> 
+                  <TextField autoFocus fullWidth label="Email" name="email" onChange={this.handleChange}  /> 
                 </DialogContent>
                 <DialogActions>
                   <Button color="secondary" onClick={this.handleClose}>Cancel</Button>
                   <Button id="Add" color="primary" onClick={this.handleAdd}>Add</Button> 
 
                 </DialogActions>
-              </Dialog>      
+              </Dialog>  
+              <ToastContainer autoClose={1500} />  
           </div>
       ); 
     }
